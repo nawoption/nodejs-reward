@@ -25,7 +25,7 @@ const addUsers = async () => {
     password: "123123123",
     address: "meiktila",
   };
-  const result = userDB.findOne({ phone: "09100100100" });
+  const result =await userDB.findOne({ phone: "09100100100" });
   if (result) {
     console.log("user added");
   } else {
