@@ -3,9 +3,14 @@ const activityDB = require("../models/activity");
 const Helper = require("../utils/helper");
 
 const register = async (req, res, next) => {
-  req.body["password"] = Helper.encode(req.body.password);
-  const result = await new DB(req.body).save();
-  Helper.fMsg(res, "Register success", result);
+  let dbResult = await DB.findOne({ phone: req.body.phone });
+  if (dbResult) {
+    next(new Error("Phone number is already in use!"));
+  } else {
+    req.body["password"] = Helper.encode(req.body.password);
+    const result = await new DB(req.body).save();
+    Helper.fMsg(res, "Register success", result);
+  }
 };
 
 const login = async (req, res, next) => {
@@ -56,9 +61,16 @@ const removePoints = async (req, res, next) => {
     Helper.fMsg(res, "add points", result);
   }
 };
+const getUserByPhone = async (req, res, next) => {
+  const result = await DB.findOne({ phone: req.params.ph }).populate("roles").select("-password");
+  if (result) {
+    Helper.fMsg(res, "Single use", result);
+  } else next(new Error("No user with that phone number"));
+};
 module.exports = {
   register,
   login,
   addPoints,
-  removePoints
+  removePoints,
+  getUserByPhone
 };

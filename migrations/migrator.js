@@ -10,8 +10,8 @@ const roles = [
 ];
 
 const addRoles = async () => {
-  let result = await roleDB.find();
-  if (result[0]) {
+  let result = await roleDB.findOne({ name: "owner" });
+  if (result) {
     console.log("roles added");
   } else {
     let result = await roleDB.insertMany(roles);
@@ -25,7 +25,7 @@ const addUsers = async () => {
     password: "123123123",
     address: "meiktila",
   };
-  const result =await userDB.findOne({ phone: "09100100100" });
+  const result = await userDB.findOne({ phone: "09100100100" });
   if (result) {
     console.log("user added");
   } else {

@@ -4,8 +4,8 @@ module.exports = {
     register: joi.object({
       name: joi.string().required().max(30),
       phone: joi.number().min(9).max(11).required(),
-      points: joi.number().required(),
       address: joi.string().required().max(50),
+      email: joi.string().email().required(),
       password: joi.string().required().min(6).max(30),
     }),
     login: joi.object({
