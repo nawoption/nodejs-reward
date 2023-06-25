@@ -1,9 +1,48 @@
-const DB = require("../models/activity");
+const userDB = require("../models/user");
 const Helper = require("../utils/helper");
+const activityDB = require("../models/activity");
 
-const all = async (req, res, next) => {
-  const results = await DB.find({ userId: req.user._id });
-  Helper.fMsg(res, "All user items", results);
+const loginedUser = async (req, res, next) => {
+  const results = await activityDB.find({ userId: req.user._id });
+  Helper.fMsg(res, "Logined user records", results);
+};
+const filterUser = async (req, res, next) => {
+  const results = await activityDB.find({ userId: req.params.id });
+  Helper.fMsg(res, "Single user records", results);
+};
+const addPoints = async (req, res, next) => {
+  const dbResult = await userDB.findById(req.body.userId).select("_id points");
+  if (dbResult) {
+    let totalPoints = dbResult.points + req.body.points;
+    await userDB.findByIdAndUpdate(dbResult._id, { points: totalPoints });
+    const result = await userDB.findById(req.body.userId).select("_id points");
+    const obj = {
+      userId: req.body.userId,
+      points: req.body.points,
+      status: true,
+    };
+    const activityResult = await new activityDB(obj).save();
+    Helper.fMsg(res, "add points", result);
+  }
+};
+const removePoints = async (req, res, next) => {
+  const dbResult = await userDB.findById(req.body.userId).select("_id points");
+  if (dbResult) {
+    if (dbResult.points >= req.body.points) {
+      let totalPoints = dbResult.points - req.body.points;
+      await userDB.findByIdAndUpdate(dbResult._id, { points: totalPoints });
+      const result = await userDB
+        .findById(req.body.userId)
+        .select("_id points");
+      const obj = {
+        userId: req.body.userId,
+        points: req.body.points,
+        status: false,
+      };
+      const activityResult = await new activityDB(obj).save();
+      Helper.fMsg(res, "remove points", result);
+    } else next(new Error("Not enought points"));
+  }
 };
 const drop = async (req, res, next) => {
   const dbResult = await DB.findById(req.params.id);
@@ -13,6 +52,9 @@ const drop = async (req, res, next) => {
   }
 };
 module.exports = {
-  all,
+  filterUser,
+  loginedUser,
   drop,
+  addPoints,
+  removePoints,
 };

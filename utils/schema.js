@@ -3,9 +3,9 @@ module.exports = {
   UserSchema: {
     register: joi.object({
       name: joi.string().required().max(30),
-      phone: joi.number().min(9).max(11).required(),
+      phone: joi.number().required(),
       address: joi.string().required().max(50),
-      email: joi.string().email().required(),
+      email: joi.string().email(),
       password: joi.string().required().min(6).max(30),
     }),
     login: joi.object({

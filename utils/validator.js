@@ -7,10 +7,27 @@ module.exports = {
       else next();
     };
   },
-  validateRole: (roleName) => {
+  validateRole: (role) => {
     return (req, res, next) => {
-      let found = req.user.roles.find((role) => role.name == roleName);
-      if (found) next();
+      let roleFound = req.user.role.name==role;
+      if (roleFound) {
+        next();
+      } else {
+        next(new Error("You don't have Owner permission"));
+      }
+    };
+  },
+  hasAnyRole: (roles) => {
+    return (req, res, next) => {
+      let con = false;
+      for (let i = 0; i < roles.length; i++) {
+        let roleFound = req.user.role.name == roles[i];
+        if (roleFound) {
+          con = true;
+          break;
+        }
+      }
+      if (con) next();
       else next(new Error("You don't have permission"));
     };
   },

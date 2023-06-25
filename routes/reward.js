@@ -4,19 +4,28 @@ const { singleFileSave } = require("../utils/gallery");
 const { RewardSchema } = require("../utils/schema");
 const {
   validateToken,
-  validateRole,
   validateBody,
+  hasAnyRole,
 } = require("../utils/validator");
 
 router.get("/", controller.all);
 router.post(
   "/",
   validateToken(),
-  validateRole("admin"),
-  singleFileSave,
+  hasAnyRole(["owner", "admin"]),
   validateBody(RewardSchema),
   controller.add
 );
-router.patch("/:id", validateToken(), validateRole("admin"), controller.patch);
-router.delete("/:id", validateToken(), validateRole("admin"), controller.drop);
+router.patch(
+  "/:id",
+  validateToken(),
+  hasAnyRole(["owner", "admin"]),
+  controller.patch
+);
+router.delete(
+  "/:id",
+  validateToken(),
+  hasAnyRole(["owner", "admin"]),
+  controller.drop
+);
 module.exports = router;

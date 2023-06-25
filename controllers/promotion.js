@@ -14,14 +14,14 @@ const patch = async (req, res, next) => {
   if (dbResult) {
     await DB.findByIdAndUpdate(dbResult._id, req.body);
     Helper.fMsg(res, "Data Updated");
-  }
+  }else next(new Error("No post with that Id"))
 };
 const drop = async (req, res, next) => {
   const dbResult = await DB.findById(req.params.id);
   if (dbResult) {
     await DB.findByIdAndDelete(dbResult._id);
     Helper.fMsg(res, "Data Deleted");
-  }
+  }else next(new Error("No post with that Id"))
 };
 module.exports = {
   add,
