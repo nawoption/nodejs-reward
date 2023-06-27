@@ -18,6 +18,13 @@ router.post(
   controller.register
 );
 router.post("/login", controller.login);
-
+router.post("/changePassword", validateToken(), controller.changePassword);
+router.post(
+  "/forgetPassword",
+  validateToken(),
+  hasAnyRole(["owner", "admin"]),
+  controller.changePassword
+);
+router.post("/update", validateToken(), controller.updateProfile);
 
 module.exports = router;

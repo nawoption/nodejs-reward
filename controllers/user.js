@@ -39,8 +39,26 @@ const getUserByPhone = async (req, res, next) => {
     Helper.fMsg(res, "Single use", result);
   } else next(new Error("No user with that phone number"));
 };
+const changePassword = async (req, res, next) => {
+  const result = await DB.findOne({ phone: req.body.phone });
+  if (result) {
+    let hashPassword = Helper.encode(req.body.password);
+    await DB.findByIdAndUpdate(result._id, { password: hashPassword });
+    Helper.fMsg(res, "Password resetd success");
+  } else next(new Error("No user with that phone number"));
+};
+const updateProfile = async (req, res, next) => {
+  const result = await DB.findOne({ phone: req.body.phone });
+  if (result) {
+    await DB.findByIdAndUpdate(result._id, req.body);
+    Helper.fMsg(res, "Updated profile");
+  } else next(new Error("No user with that phone number"));
+};
+
 module.exports = {
   register,
   login,
   getUserByPhone,
+  changePassword,
+  updateProfile,
 };
