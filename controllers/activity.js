@@ -31,16 +31,7 @@ const removePoints = async (req, res, next) => {
     if (dbResult.points >= req.body.points) {
       let totalPoints = dbResult.points - req.body.points;
       await userDB.findByIdAndUpdate(dbResult._id, { points: totalPoints });
-      const result = await userDB
-        .findById(req.body.userId)
-        .select("_id points");
-      const obj = {
-        userId: req.body.userId,
-        points: req.body.points,
-        status: false,
-      };
-      const activityResult = await new activityDB(obj).save();
-      Helper.fMsg(res, "remove points", result);
+      Helper.fMsg(res, "removed points");
     } else next(new Error("Not enought points"));
   }
 };

@@ -40,15 +40,26 @@ const getUserByPhone = async (req, res, next) => {
   } else next(new Error("No user with that phone number"));
 };
 const changePassword = async (req, res, next) => {
+  const result = await DB.findOne({ phone: req.user.phone });
+  if (result) {
+    if (Helper.checkPassword(req.body.oldPassword, result.password)) {
+      let hashPassword = Helper.encode(req.body.password);
+      await DB.findByIdAndUpdate(result._id, { password: hashPassword });
+      Helper.fMsg(res, "Password changed successfully");
+    } else next(new Error("Password is incorrect"));
+  } else next(new Error("No user with that phone number"));
+};
+const forgetPassword = async (req, res, next) => {
   const result = await DB.findOne({ phone: req.body.phone });
   if (result) {
     let hashPassword = Helper.encode(req.body.password);
     await DB.findByIdAndUpdate(result._id, { password: hashPassword });
-    Helper.fMsg(res, "Password resetd success");
+    const updateData = await DB.findOne({ phone: req.body.phone });
+    Helper.fMsg(res, "Password changed successfully",updateData);
   } else next(new Error("No user with that phone number"));
 };
 const updateProfile = async (req, res, next) => {
-  const result = await DB.findOne({ phone: req.body.phone });
+  const result = await DB.findOne({ phone: req.user.phone });
   if (result) {
     await DB.findByIdAndUpdate(result._id, req.body);
     Helper.fMsg(res, "Updated profile");
@@ -61,4 +72,5 @@ module.exports = {
   getUserByPhone,
   changePassword,
   updateProfile,
+  forgetPassword,
 };

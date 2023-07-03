@@ -6,21 +6,23 @@ const fileupload = require("express-fileupload");
 const app = express();
 app.use(express.json());
 app.use(fileupload());
-// mongoose.connect("mongodb://127.0.0.1:27017/reward");
-mongoose.connect(process.env.DB_Link);
+mongoose.connect("mongodb://127.0.0.1:27017/reward");
+// mongoose.connect(process.env.DB_Link);
 
 const userRoute = require("./routes/user");
 const roleRoute = require("./routes/role");
 const promotionRoute = require("./routes/promotion");
 const rewardRoute = require("./routes/reward");
 const activityRoute = require("./routes/activity");
+const rewardOrder = require("./routes/rewardOrder");
 const { validateToken, validateRole } = require("./utils/validator");
 
 app.use("/users", userRoute);
-app.use("/roles", validateToken(), validateRole("owner"), roleRoute);
 app.use("/promotion", promotionRoute);
 app.use("/reward", rewardRoute);
+app.use("/roles", validateToken(), validateRole("owner"), roleRoute);
 app.use("/activity", validateToken(), activityRoute);
+app.use("/rewardOrder",validateToken(),rewardOrder);
 
 const defaultData = async () => {
   const migrator = require("./migrations/migrator");
