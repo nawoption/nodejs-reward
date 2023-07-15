@@ -11,7 +11,9 @@ const register = async (req, res, next) => {
     req.body["password"] = Helper.encode(req.body.password);
     req.body["role"] = userRole._id;
     const result = await new DB(req.body).save();
-    Helper.fMsg(res, "Register success", result);
+    let user = result.toJSON();
+    delete user.password;
+    Helper.fMsg(res, "Register success", user);
   }
 };
 
@@ -36,8 +38,13 @@ const getUserByPhone = async (req, res, next) => {
     .populate("role")
     .select("-password");
   if (result) {
-    Helper.fMsg(res, "Single use", result);
+    Helper.fMsg(res, "User exists", result);
   } else next(new Error("No user with that phone number"));
+};
+const getEmployee = async (req, res, next) => {
+  const dbEmployee = await roleDB.findOne({ name: "employee" });
+  const result = await DB.find({ role: dbEmployee._id });
+  Helper.fMsg(res, "Employess", result);
 };
 const changePassword = async (req, res, next) => {
   const result = await DB.findOne({ phone: req.user.phone });
@@ -45,7 +52,7 @@ const changePassword = async (req, res, next) => {
     if (Helper.checkPassword(req.body.oldPassword, result.password)) {
       let hashPassword = Helper.encode(req.body.password);
       await DB.findByIdAndUpdate(result._id, { password: hashPassword });
-      Helper.fMsg(res, "Password changed successfully");
+      Helper.fMsg(res, "Password successfully changed");
     } else next(new Error("Password is incorrect"));
   } else next(new Error("No user with that phone number"));
 };
@@ -55,22 +62,35 @@ const forgetPassword = async (req, res, next) => {
     let hashPassword = Helper.encode(req.body.password);
     await DB.findByIdAndUpdate(result._id, { password: hashPassword });
     const updateData = await DB.findOne({ phone: req.body.phone });
-    Helper.fMsg(res, "Password changed successfully",updateData);
+    Helper.fMsg(res, "Password successfully reseted", updateData);
   } else next(new Error("No user with that phone number"));
 };
 const updateProfile = async (req, res, next) => {
   const result = await DB.findOne({ phone: req.user.phone });
   if (result) {
     await DB.findByIdAndUpdate(result._id, req.body);
-    Helper.fMsg(res, "Updated profile");
+    const updateResult = await DB.findOne({ phone: req.user.phone });
+    let user = updateResult.toJSON();
+    delete user.password;
+    Helper.fMsg(res, "Profile Updated", user);
   } else next(new Error("No user with that phone number"));
+};
+
+const dropUser = async (req, res, next) => {
+  const dbResult = await DB.findById(req.params.id);
+  if (dbResult) {
+    await DB.findByIdAndDelete(req.params.id);
+    Helper.fMsg(res, "User Deleted");
+  } else next(new Error("No user with that Id "));
 };
 
 module.exports = {
   register,
   login,
   getUserByPhone,
+  getEmployee,
   changePassword,
   updateProfile,
   forgetPassword,
+  dropUser,
 };

@@ -8,7 +8,7 @@ const loginedUser = async (req, res, next) => {
 };
 const filterUser = async (req, res, next) => {
   const results = await activityDB.find({ userId: req.params.id });
-  Helper.fMsg(res, "Single user records", results);
+  Helper.fMsg(res, "Single user record", results);
 };
 const addPoints = async (req, res, next) => {
   const dbResult = await userDB.findById(req.body.userId).select("_id points");

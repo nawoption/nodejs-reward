@@ -10,7 +10,7 @@ const changeRole = async (req, res, next) => {
   let dbUser = await userDB.findById(req.body.userId);
   let dbRole = await DB.findById(req.body.roleId);
   await userDB.findByIdAndUpdate(dbUser._id, { role: dbRole._id });
-  Helper.fMsg(res, "Changed Role to user");
+  Helper.fMsg(res, "Changed Role");
 };
 
 module.exports = {

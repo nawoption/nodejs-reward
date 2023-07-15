@@ -6,8 +6,8 @@ const fileupload = require("express-fileupload");
 const app = express();
 app.use(express.json());
 app.use(fileupload());
-// mongoose.connect("mongodb://127.0.0.1:27017/reward");
-mongoose.connect(process.env.DB_Link);
+mongoose.connect("mongodb://127.0.0.1:27017/reward");
+// mongoose.connect(process.env.DB_Link);   
 
 const userRoute = require("./routes/user");
 const roleRoute = require("./routes/role");
@@ -19,8 +19,8 @@ const { validateToken, validateRole } = require("./utils/validator");
 
 app.use("/users", userRoute);
 app.use("/promotion", promotionRoute);
-app.use("/reward", rewardRoute);
-app.use("/roles", validateToken(), validateRole("owner"), roleRoute);
+app.use("/reward", validateToken(),rewardRoute);
+app.use("/roles", validateToken(), validateRole("admin"), roleRoute);
 app.use("/activity", validateToken(), activityRoute);
 app.use("/rewardOrder",validateToken(),rewardOrder);
 

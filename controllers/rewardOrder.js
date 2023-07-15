@@ -37,8 +37,13 @@ const add = async (req, res, next) => {
     } else next(new Error("Not enought points"));
   }
 };
+const update = async (req, res, next) => {
+  await DB.findByIdAndUpdate(req.body.orderId, { status: "received" });
+  Helper.fMsg(res, "Reward Order Updated");
+};
 module.exports = {
   loginedUser,
   filterUser,
   add,
+  update
 };

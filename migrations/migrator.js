@@ -2,10 +2,10 @@ const roleDB = require("../models/role");
 const userDB = require("../models/user");
 const Helper = require("../utils/helper");
 
-const roles = [{ name: "owner" }, { name: "admin" }, { name: "sale" },{name:"user"}];
+const roles = [{ name: "admin" }, { name: "employee" },{name:"user"}];
 
 const addRoles = async () => {
-  let result = await roleDB.findOne({ name: "owner" });
+  let result = await roleDB.findOne({ name: "admin" });
   if (result) {
     console.log("roles added");
   } else {
@@ -30,11 +30,11 @@ const addUsers = async () => {
   }
 };
 const addOwnerRole = async () => {
-  const ownerRole = await roleDB.findOne({ name: "owner" });
+  const ownerRole = await roleDB.findOne({ name: "admin" });
   const onwerUser = await userDB.findOne({ phone: "09100100100" });
   if (!onwerUser.role) {
     await userDB.findByIdAndUpdate(onwerUser._id, { role: ownerRole._id });
-    console.log("add owner migration done");
+    console.log("add admin migration done");
   }
 };
 module.exports = {

@@ -5,14 +5,14 @@ const { validateToken, hasAnyRole } = require("../utils/validator");
 router.get("/", controller.loginedUser);
 router.get(
   "/:id",
-  hasAnyRole(["owner", "admin", "sale"]),
+  hasAnyRole(["admin", "employee"]),
   controller.filterUser
 );
-router.delete("/:id", hasAnyRole(["owner", "admin"]), controller.drop);
+router.delete("/:id", hasAnyRole(["admin"]), controller.drop);
 router.post(
   "/addPoint",
-  hasAnyRole(["owner", "admin", "sale"]),
+  hasAnyRole(["admin", "employee"]),
   controller.addPoints
 );
-router.post("/removePoint", controller.removePoints);
+// router.post("/removePoint", controller.removePoints);
 module.exports = router;

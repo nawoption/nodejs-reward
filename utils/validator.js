@@ -13,7 +13,7 @@ module.exports = {
       if (roleFound) {
         next();
       } else {
-        next(new Error("You don't have Owner permission"));
+        next(new Error("You don't have Admin permission"));
       }
     };
   },
