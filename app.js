@@ -6,8 +6,8 @@ const fileupload = require("express-fileupload");
 const app = express();
 app.use(express.json());
 app.use(fileupload());
-mongoose.connect("mongodb://127.0.0.1:27017/reward");
-// mongoose.connect(process.env.DB_Link);   
+// mongoose.connect("mongodb://127.0.0.1:27017/reward");
+mongoose.connect(process.env.DB_Link);   
 
 const userRoute = require("./routes/user");
 const roleRoute = require("./routes/role");
