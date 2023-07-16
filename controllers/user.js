@@ -52,7 +52,7 @@ const changePassword = async (req, res, next) => {
     if (Helper.checkPassword(req.body.oldPassword, result.password)) {
       let hashPassword = Helper.encode(req.body.password);
       await DB.findByIdAndUpdate(result._id, { password: hashPassword });
-      Helper.fMsg(res, "Password successfully changed");
+      Helper.fMsg(res, "Password successfully changed,please login again");
     } else next(new Error("Password is incorrect"));
   } else next(new Error("No user with that phone number"));
 };
