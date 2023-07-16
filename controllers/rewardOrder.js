@@ -10,14 +10,12 @@ const loginedUser = async (req, res, next) => {
 };
 const filterPendingOrders = async (req, res, next) => {
   let dbResults = await DB.find({
-    user: req.params.userId,
     status: "pending",
   }).populate("user reward");
   Helper.fMsg(res, "All pending orders", dbResults);
 };
 const filterReceivedOrders = async (req, res, next) => {
   let dbResults = await DB.find({
-    user: req.params.userId,
     status: "received",
   }).populate("user reward");
   Helper.fMsg(res, "All received orders", dbResults);
