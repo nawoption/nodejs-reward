@@ -8,11 +8,19 @@ const loginedUser = async (req, res, next) => {
   let dbResults = await DB.find({ user: req.user._id }).populate("user reward");
   Helper.fMsg(res, "All reward orders", dbResults);
 };
-const filterUser = async (req, res, next) => {
-  let dbResults = await DB.find({ user: req.body.userId }).populate(
-    "user reward"
-  );
-  Helper.fMsg(res, "All reward orders", dbResults);
+const filterPendingOrders = async (req, res, next) => {
+  let dbResults = await DB.find({
+    user: req.params.userId,
+    status: "pending",
+  }).populate("user reward");
+  Helper.fMsg(res, "All pending orders", dbResults);
+};
+const filterReceivedOrders = async (req, res, next) => {
+  let dbResults = await DB.find({
+    user: req.params.userId,
+    status: "received",
+  }).populate("user reward");
+  Helper.fMsg(res, "All received orders", dbResults);
 };
 
 const add = async (req, res, next) => {
@@ -38,12 +46,13 @@ const add = async (req, res, next) => {
   }
 };
 const update = async (req, res, next) => {
-  await DB.findByIdAndUpdate(req.body.orderId, { status: "received" });
+  await DB.findByIdAndUpdate(req.body.orderId, { status: req.body.status });
   Helper.fMsg(res, "Reward Order Updated");
 };
 module.exports = {
   loginedUser,
-  filterUser,
+  filterPendingOrders,
+  filterReceivedOrders,
   add,
-  update
+  update,
 };

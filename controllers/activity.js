@@ -22,7 +22,7 @@ const addPoints = async (req, res, next) => {
       status: true,
     };
     const activityResult = await new activityDB(obj).save();
-    Helper.fMsg(res, "add points", result);
+    Helper.fMsg(res, "Added points", result);
   }
 };
 const removePoints = async (req, res, next) => {
