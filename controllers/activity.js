@@ -3,11 +3,15 @@ const Helper = require("../utils/helper");
 const activityDB = require("../models/activity");
 
 const loginedUser = async (req, res, next) => {
-  const results = await activityDB.find({ userId: req.user._id });
+  const results = await activityDB
+    .find({ userId: req.user._id })
+    .sort({ created: -1 });
   Helper.fMsg(res, "Logined user records", results);
 };
 const filterUser = async (req, res, next) => {
-  const results = await activityDB.find({ userId: req.params.id });
+  const results = await activityDB
+    .find({ userId: req.params.id })
+    .sort({ created: -1 });
   Helper.fMsg(res, "Single user record", results);
 };
 const addPoints = async (req, res, next) => {
@@ -19,9 +23,9 @@ const addPoints = async (req, res, next) => {
     const obj = {
       userId: req.body.userId,
       points: req.body.points,
-      status: true,
+      transactionType: "Earn Points",
     };
-    const activityResult = await new activityDB(obj).save();
+    await new activityDB(obj).save();
     Helper.fMsg(res, "Added points", result);
   }
 };

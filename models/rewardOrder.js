@@ -4,6 +4,7 @@ const rewardOrderSchema = Schema({
   reward: { type: Schema.Types.ObjectId, required: true, ref: "reward" },
   status: { type: String, enum: ["pending", "received"], default: "pending" },
   created: { type: Date, default: Date.now },
+  receivedDate: { type: Date, default: null },
 });
 const RewardOrder = model("rewardOrder", rewardOrderSchema);
 module.exports = RewardOrder;

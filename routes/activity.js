@@ -8,7 +8,7 @@ router.get(
   hasAnyRole(["admin", "employee"]),
   controller.filterUser
 );
-router.delete("/:id", hasAnyRole(["admin"]), controller.drop);
+// router.delete("/:id", hasAnyRole(["admin"]), controller.drop);
 router.post(
   "/addPoint",
   hasAnyRole(["admin", "employee"]),

@@ -5,19 +5,25 @@ const activityDB = require("../models/activity");
 const Helper = require("../utils/helper");
 
 const loginedUser = async (req, res, next) => {
-  let dbResults = await DB.find({ user: req.user._id }).populate("user reward");
+  let dbResults = await DB.find({ user: req.user._id })
+    .sort({ created: -1 })
+    .populate("user reward");
   Helper.fMsg(res, "All reward orders", dbResults);
 };
 const filterPendingOrders = async (req, res, next) => {
   let dbResults = await DB.find({
     status: "pending",
-  }).populate("user reward");
+  })
+    .sort({ created: -1 })
+    .populate("user reward");
   Helper.fMsg(res, "All pending orders", dbResults);
 };
 const filterReceivedOrders = async (req, res, next) => {
   let dbResults = await DB.find({
     status: "received",
-  }).populate("user reward");
+  })
+    .sort({ created: -1 })
+    .populate("user reward");
   Helper.fMsg(res, "All received orders", dbResults);
 };
 
@@ -31,7 +37,7 @@ const add = async (req, res, next) => {
       const activityObj = {
         userId: req.user._id,
         points: dbReward.points,
-        status: false,
+        transactionType: "Redemption",
       };
       const rewardObj = {
         user: dbResult._id,
@@ -44,8 +50,23 @@ const add = async (req, res, next) => {
   }
 };
 const update = async (req, res, next) => {
-  await DB.findByIdAndUpdate(req.body.orderId, { status: req.body.status });
-  Helper.fMsg(res, "Reward Order Updated");
+  // let obj = { status: "received", receivedDate: new Date() };
+  // await DB.findByIdAndUpdate(req.body.orderId, obj);
+  // Helper.fMsg(res, "Reward order received");
+  DB.findById(req.body.orderId)
+    .then((order) => {
+      if (!order) {
+        next(new Error("Order not found"));
+        return;
+      }
+      order.status = "received";
+      order.receivedDate = new Date();
+      return order.save();
+    })
+    .then((orderUpdated) => {
+      Helper.fMsg(res, "Reward order updated", orderUpdated);
+    })
+    .catch((error) => console.error("Error completing order:", error));
 };
 module.exports = {
   loginedUser,
