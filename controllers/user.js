@@ -46,6 +46,10 @@ const getEmployee = async (req, res, next) => {
   const result = await DB.find({ role: dbEmployee._id });
   Helper.fMsg(res, "Employess", result);
 };
+const getCount = async (req, res, next) => {
+  const totalUsers = await DB.countDocuments({});
+  Helper.fMsg(res, "Total number of registered users:", totalUsers);
+};
 const changePassword = async (req, res, next) => {
   const result = await DB.findOne({ phone: req.user.phone });
   if (result) {
@@ -89,6 +93,7 @@ module.exports = {
   login,
   getUserByPhone,
   getEmployee,
+  getCount,
   changePassword,
   updateProfile,
   forgetPassword,

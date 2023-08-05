@@ -29,6 +29,64 @@ const addPoints = async (req, res, next) => {
     Helper.fMsg(res, "Added points", result);
   }
 };
+const getToday = async (req, res, next) => {
+  try {
+    const desiredDate = new Date(req.params.desiredDate);
+    desiredDate.setHours(0, 0, 0, 0);
+    // Create a new date object for the next day (end of the day)
+    const nextDay = new Date(desiredDate);
+    nextDay.setDate(nextDay.getDate() + 1);
+    let pipeline = [
+      {
+        $match: {
+          // transactionType: "Earn Points", // Only consider transactions of type 'Earn Points'
+          created: { $gte: desiredDate, $lt: nextDay }, // Filter transactions for today or after
+        },
+      },
+      {
+        $group: {
+          _id: "$transactionType",
+          totalPoints: { $sum: "$points" }, // Calculate the sum of points earned today
+        },
+      },
+    ];
+    const result = await activityDB.aggregate(pipeline);
+
+    const earnedPoints =
+      result.find((item) => item._id === "Earn Points")?.totalPoints || 0;
+    const redeemPoints =
+      result.find((item) => item._id === "Redemption")?.totalPoints || 0;
+
+    Helper.fMsg(res, "Earned and Redeem Points:", {
+      earnedPoints,
+      redeemPoints,
+    });
+  } catch (err) {
+    console.error("Error fetching today's activity:", err);
+  }
+};
+const getTransaction = async (req, res, next) => {
+  try {
+    const desiredDate = new Date(req.params.desiredDate);
+    desiredDate.setHours(0, 0, 0, 0);
+    // Create a new date object for the next day (end of the day)
+    const nextDay = new Date(desiredDate);
+    nextDay.setDate(nextDay.getDate() + 1);
+    let pipeline = [
+      {
+        $match: {
+          // transactionType: "Earn Points", // Only consider transactions of type 'Earn Points'
+          created: { $gte: desiredDate }, // Filter transactions for today or after
+        },
+      },
+    ];
+    const result = await activityDB.aggregate(pipeline);
+    Helper.fMsg(res, "Transaction History", result);
+  } catch (err) {
+    console.error("Error fetching today's activity:", err);
+  }
+};
+
 const removePoints = async (req, res, next) => {
   const dbResult = await userDB.findById(req.body.userId).select("_id points");
   if (dbResult) {
@@ -49,7 +107,7 @@ const drop = async (req, res, next) => {
 module.exports = {
   filterUser,
   loginedUser,
-  drop,
   addPoints,
-  removePoints,
+  getToday,
+  getTransaction,
 };
