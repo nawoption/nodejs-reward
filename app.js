@@ -29,7 +29,6 @@ app.use("/rewardOrder", validateToken(), rewardOrder);
 app.use(
   "/activity",
   validateToken(),
-  hasAnyRole(["admin", "employee"]),
   activityRoute
 );
 
