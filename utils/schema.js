@@ -20,6 +20,7 @@ module.exports = {
       name: joi.string().required().min(6).max(30),
       address: joi.string().required().max(50),
       email: joi.string().email().optional(),
+      phone:joi.string().optional()
     }),
   },
   PromotionSchema: joi.object({
