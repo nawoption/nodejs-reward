@@ -76,7 +76,7 @@ const getTransaction = async (req, res, next) => {
       {
         $match: {
           // transactionType: "Earn Points", // Only consider transactions of type 'Earn Points'
-          created: { $gte: desiredDate }, // Filter transactions for today or after
+          created: { $gte: desiredDate, $lt: nextDay }, // Filter transactions for today or after
         },
       },
     ];

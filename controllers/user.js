@@ -13,7 +13,7 @@ const register = async (req, res, next) => {
     const result = await new DB(req.body).save();
     let user = result.toJSON();
     delete user.password;
-    Helper.fMsg(res, "Register success", user);
+    Helper.fMsg(res, "Register success, please login", user);
   }
 };
 
