@@ -22,7 +22,7 @@ const filterReceivedOrders = async (req, res, next) => {
   let dbResults = await DB.find({
     status: "received",
   })
-    .sort({ created: -1 })
+    .sort({ _id: -1 })
     .populate("user reward");
   Helper.fMsg(res, "All received orders", dbResults);
 };
