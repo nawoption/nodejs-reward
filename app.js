@@ -15,22 +15,14 @@ const promotionRoute = require("./routes/promotion");
 const rewardRoute = require("./routes/reward");
 const activityRoute = require("./routes/activity");
 const rewardOrder = require("./routes/rewardOrder");
-const {
-  validateToken,
-  validateRole,
-  hasAnyRole,
-} = require("./utils/validator");
+const { validateToken, validateRole, hasAnyRole } = require("./utils/validator");
 
 app.use("/users", userRoute);
 app.use("/promotion", promotionRoute);
 app.use("/reward", validateToken(), rewardRoute);
 app.use("/roles", validateToken(), validateRole("admin"), roleRoute);
 app.use("/rewardOrder", validateToken(), rewardOrder);
-app.use(
-  "/activity",
-  validateToken(),
-  activityRoute
-);
+app.use("/activity", validateToken(), activityRoute);
 
 const defaultData = async () => {
   const migrator = require("./migrations/migrator");
@@ -49,7 +41,4 @@ app.use((err, req, res, next) => {
   }
 });
 
-app.listen(
-  process.env.PORT,
-  console.log(`Server is listen at port ${process.env.PORT}`)
-);
+app.listen(process.env.PORT, console.log(`Server is listen at port ${process.env.PORT}`));
