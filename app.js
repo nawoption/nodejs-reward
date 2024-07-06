@@ -7,7 +7,7 @@ const app = express();
 app.use(express.json());
 app.use(fileupload());
 // mongoose.connect("mongodb://127.0.0.1:27017/reward");
-mongoose.connect(process.env.DB_Link);
+mongoose.connect("mongodb+srv://admin:gN0SRqS7KBY6jckW@reward.qo6mqkh.mongodb.net/?retryWrites=true");
 
 const userRoute = require("./routes/user");
 const roleRoute = require("./routes/role");
@@ -41,4 +41,4 @@ app.use((err, req, res, next) => {
   }
 });
 
-app.listen(process.env.PORT, console.log(`Server is listen at port ${process.env.PORT}`));
+app.listen(3000, console.log(`Server is listen at port ${process.env.PORT}`));
