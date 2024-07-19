@@ -25,6 +25,9 @@ app.use("/reward", validateToken(), rewardRoute);
 app.use("/roles", validateToken(), validateRole("admin"), roleRoute);
 app.use("/rewardOrder", validateToken(), rewardOrder);
 app.use("/activity", validateToken(), activityRoute);
+app.use("/", (req, res, next) => {
+  res.status(200).send({ msg: "Hello Wrold" });
+});
 
 const defaultData = async () => {
   const migrator = require("./migrations/migrator");
