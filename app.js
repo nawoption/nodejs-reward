@@ -2,10 +2,12 @@ require("dotenv").config();
 const express = require("express");
 const mongoose = require("mongoose");
 const fileupload = require("express-fileupload");
+const cors = require("cors");
 
 const app = express();
 app.use(express.json());
 app.use(fileupload());
+app.use(cors());
 // mongoose.connect("mongodb://127.0.0.1:27017/reward");
 mongoose.connect("mongodb+srv://admin:gN0SRqS7KBY6jckW@reward.qo6mqkh.mongodb.net/?retryWrites=true");
 
