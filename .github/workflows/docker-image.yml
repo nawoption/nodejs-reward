@@ -38,13 +38,17 @@ jobs:
         push: true
         tags: nawoption/shop:latest
 
-deploy:
+  deploy:
     needs: build
     runs-on: self-hosted
     steps:
-      - name: Pull image from docker hub
+      - name: Pull image from Docker Hub
         run: docker pull nawoption/shop:latest
-      - name: Delete old container
-        run: docker rm -f nodejs-app-container 
-      - name: Run docker container
-        run: docker run -d -p 3000:3000 --name nodejs-app-container nawoption/shop
+
+      - name: Stop and remove old container
+        run: |
+          docker stop nodejs-app-container || true
+          docker rm nodejs-app-container || true
+
+      - name: Run Docker container
+        run: docker run -d -p 3000:3000 --name nodejs-app-container nawoption/shop:latest
