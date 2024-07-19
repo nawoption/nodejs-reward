@@ -49,6 +49,7 @@ jobs:
         run: |
           docker stop nodejs-app-container || true
           docker rm nodejs-app-container || true
+          docker container prune -f
 
       - name: Run Docker container
         run: docker run -d -p 3000:3000 --name nodejs-app-container nawoption/shop:latest
